@@ -32,6 +32,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
 public class MemoryUtilsTest {
+  @Ignore
   @Test
   public void testGetPhysicalMemoryUNIX() throws IOException {
     assumeTrue(SystemUtils.IS_OS_UNIX);

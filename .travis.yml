@@ -1,5 +1,18 @@
 language: java
-jdk: openjdk11
+jdk: openjdk14
+
+jobs:
+  include:
+    - os: osx
+      osx_image: xcode12
+    - os: windows
+      language: shell
+
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install -y openjdk ; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install -y maven ; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then powershell Install-WindowsFeature Net-Framework-Core ; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install -y wixtoolset ; fi
 
 cache:
   directories:
@@ -7,3 +20,7 @@ cache:
 
 git:
   depth: 1
+
+script:
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then cmd.exe //c "RefreshEnv.cmd & mvn package -P release-windows" ; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then mvn package -P release-mac ; fi
