@@ -35,6 +35,8 @@ import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.playerwizard.WizardModel;
+import VASSAL.launch.playerwizard.WizardPanel;
 import VASSAL.tools.ApplicationIcons;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.ErrorDialog;
@@ -57,6 +59,9 @@ public class PlayerWindow extends JFrame {
 
   protected final JToolBar toolBar = new JToolBar();
   protected final JPanel controlPanel = new JPanel();
+
+  private WizardPanel wizardPanel;
+  private WizardModel wizardModel;
 
   public PlayerWindow() {
     setTitle("VASSAL");
@@ -174,6 +179,8 @@ public class PlayerWindow extends JFrame {
   }
 
   private void buildCentralArea() {
+    wizardPanel = new WizardPanel(this);
+
     controlPanel.setLayout(new BorderLayout());
     controlPanel.setPreferredSize(new Dimension(800, 600));
     add(controlPanel, BorderLayout.CENTER);
@@ -216,4 +223,20 @@ public class PlayerWindow extends JFrame {
     controlPanel.add(chatter, BorderLayout.CENTER);
   }
 
+  public void showWizard() {
+    wizardPanel.setWizardModel(wizardModel);
+    controlPanel.remove(chatter);
+    controlPanel.add(wizardPanel, BorderLayout.CENTER);
+    controlPanel.revalidate();
+  }
+
+  public void closeWizard() {
+    controlPanel.remove(wizardPanel);
+    controlPanel.add(chatter, BorderLayout.CENTER);
+    controlPanel.revalidate();
+  }
+
+  public void setWizardModel(WizardModel wizardModel) {
+    this.wizardModel = wizardModel;
+  }
 }

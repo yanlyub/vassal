@@ -18,9 +18,13 @@
 
 package VASSAL.launch;
 
+import static VASSAL.build.module.WizardSupport.WELCOME_WIZARD_KEY;
+
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -31,13 +35,16 @@ import org.apache.commons.lang3.SystemUtils;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
+import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.ModuleExtension;
+import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.playerwizard.WizardModel;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
@@ -89,6 +96,7 @@ public class Player extends Launcher {
       createExtensionsLoader().addTo(GameModule.getGameModule());
       Localization.getInstance().translate();
       final GameModule m = GameModule.getGameModule();
+
       if (lr.game != null) {
         m.getPlayerWindow().setVisible(true);
         m.setGameFile(lr.game.getName(), GameModule.GameFileMode.LOADED_GAME);
@@ -152,6 +160,18 @@ public class Player extends Launcher {
     final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WizardSupport.WELCOME_WIZARD_KEY);
     if (Boolean.TRUE.equals(showWizard)) {
       module.getWizardSupport().showWelcomeWizard();
+      WizardModel wizardModel = new WizardModel();
+      final GameModule m = GameModule.getGameModule();
+      final List<PredefinedSetup> predefinedSetups =
+        m.getGameState().getGameComponents()
+         .stream()
+         .filter(gameComponent -> gameComponent instanceof PredefinedSetup)
+         .map(gameComponent -> (PredefinedSetup) gameComponent)
+         .filter(predefinedSetup -> !predefinedSetup.isMenu())
+         .collect(Collectors.toList());
+      wizardModel.setPredefinedSetups(predefinedSetups);
+      m.getPlayerWindow().setWizardModel(wizardModel);
+      m.getPlayerWindow().showWizard();
     }
     else {
       module.getPlayerWindow().setVisible(true);

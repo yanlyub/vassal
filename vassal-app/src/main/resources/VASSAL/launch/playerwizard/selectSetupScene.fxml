@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx/10.0.2-internal"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="VASSAL.launch.playerwizard.SelectSetupSceneController"
+      alignment="CENTER"
+      minHeight="300.0"
+      minWidth="300.0" >
+
+    <Label text="Select setup:"/>
+    <ComboBox fx:id="setups" prefWidth="150.0"/>
+
+</HBox>
